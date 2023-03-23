@@ -1,5 +1,7 @@
+# name of workflow
 name: CI
 
+# event that trigger workflow
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -8,19 +10,19 @@ on:
       - main
 
 jobs:
-  CI:
+  CI: #job id
     runs-on: ubuntu-latest
-
+    # cancel in-progress workflow when multiple workflow using same group
     concurrency:
       group: ${{ github.workflow }}-${{ github.head_ref }}
       cancel-in-progress: true
-
+    # steps to execute job, the following contains several execution steps 
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
         with:
           submodules: recursive
-          token: ${{ secrets.access-token }}
+          token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: "Add NPM secrets"
         shell: bash
