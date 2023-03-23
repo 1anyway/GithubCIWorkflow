@@ -1,47 +1,47 @@
 name: CI
-​
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
   push:
     branches:
       - main
-​
+
 jobs:
   CI:
     runs-on: ubuntu-latest
-​
+
     concurrency:
       group: ${{ github.workflow }}-${{ github.head_ref }}
       cancel-in-progress: true
-​
+
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
         with:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
-​
+
       - name: "Add NPM secrets"
         shell: bash
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.DEPLOY_TOKEN  }}" >> ${{ github.workspace }}/.npmrc
           cat .npmrc
-​
+
       - name: "Install dependencies"
         run: yarn --frozen-lockfile
-​
+
       - name: Build
         run: yarn workspace @mv-community/solidity dist
-​
+
       - name: Type check
         run: yarn type:check
-​
+
       - name: Lint check
         run: yarn lint
-​
+
       - name: Solhint check
         run: yarn workspace @mv-community/solidity solhint:check
-​
+
       - name: Test
         run: yarn workspace @mv-community/solidity test
