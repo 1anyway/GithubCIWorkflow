@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
-          token: ${{ secrets.ACCESS_TOKEN }}
+          
 
       - name: Add NPM secrets
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.DEPLOY_TOKEN }}" >> ${{ github.workspace }}/.npmrc
