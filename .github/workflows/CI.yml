@@ -4,25 +4,30 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   CI:
     runs-on: ubuntu-latest
+
     concurrency:
       group: ${{ github.workflow }}-${{ github.head_ref }}
       cancel-in-progress: true
+
     steps:
-      - name: Checkout
+      - name: "Checkout"
         uses: actions/checkout@v3
         with:
           submodules: recursive
-          
 
-      - name: Add NPM secrets
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.DEPLOY_TOKEN }}" >> ${{ github.workspace }}/.npmrc
+      - name: "Add NPM secrets"
+        shell: bash
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.DEPLOY_TOKEN  }}" >> ${{ github.workspace }}/.npmrc
+          cat .npmrc
 
-      - name: Install dependencies
+      - name: "Install dependencies"
         run: yarn --frozen-lockfile
 
       - name: Build
